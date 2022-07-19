@@ -61,7 +61,7 @@ function getDefinifionsForModule(moduleId){
     return defs;
 }
 
-
+exports.getBlackLevels = function(){return getDefinifionsForModule("blackBelt")}
 /**
  * Initializes challenges when this module is loaded
  */
@@ -182,7 +182,14 @@ exports.getChallengeDefinitionsForUser = async (user, moduleId) => {
     var modulePath = getModulePath(moduleId);
     var moduleDefinitions = getDefinifionsForModule(moduleId);
 
+    var i=0;
     for(let level of moduleDefinitions){
+        if(i>parseInt(config.levelLimit))
+        {
+            
+            break;
+
+        }
         for(let challenge of level.challenges) {
             //update the play link if it exists
             if (!util.isNullOrUndefined(config.playLinks)) {
@@ -197,8 +204,8 @@ exports.getChallengeDefinitionsForUser = async (user, moduleId) => {
             }
         }
         returnChallenges.push(level);
+        i++;
     }
-        
     return returnChallenges;
 }
 

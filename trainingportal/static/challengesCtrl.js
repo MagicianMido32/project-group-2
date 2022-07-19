@@ -1,5 +1,4 @@
 app.controller("challengesCtrl", function($scope, $http, $routeParams) {
-
     $scope.percentDone = 0;
     $scope.completionLabel = "0/0";
     $scope.getDescriptionLink = (chId) => {
@@ -29,6 +28,7 @@ app.controller("challengesCtrl", function($scope, $http, $routeParams) {
         .then(function(response) {
             if(response != null && response.data != null && Array.isArray(response.data.challenges)){
                 $scope.levelNames = {};
+                $scope.flg=0;
                 var challengeDefinitions = response.data.challenges;
                 let totalChCount = 0;
                 let passedChCount = 0;
@@ -57,6 +57,10 @@ app.controller("challengesCtrl", function($scope, $http, $routeParams) {
                                 }
                             }
                         }
+                        if(challenges.length==0)
+                        {
+                            $scope.flg=1;
+                        }
                     }
                 }
                 $scope.targetUrl = response.data.targetUrl;
@@ -67,6 +71,12 @@ app.controller("challengesCtrl", function($scope, $http, $routeParams) {
             }
             else{
                 $scope.challengesAvailable = false;
+            }
+            if(response!= null && response.data != null)
+            {
+                $scope.showSolutions = response.data.showSolutions
+                $scope.levelLimit = response.data.levelLimit
+
             }
         });
     }

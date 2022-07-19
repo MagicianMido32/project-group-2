@@ -77,11 +77,33 @@ app.use(fileUpload({
   safeFileNames: true
 }));
 
+app.get("/modulelevels",(req, res) => {
+  if (req.user.accountId == "Local_admin") 
+  {
+    res.send({ 'levels': challenges.getBlackLevels(), 'solutionStatus': config.showSolutions, 'limit': config.levelLimit});
+  }
+});
 
+function getModulePath(moduleId){
+  return path.join('static/lessons/', moduleId);
+}
+
+function getDefinifionsForModule(moduleId){
+  var defs = Object.freeze(require(path.join(__dirname, getModulePath(moduleId), '/definitions.json')));
+  return defs;
+}
 //ROUTES
 
 app.get("/",(req,res) => {
     res.redirect('/public/index.html');
+});
+
+app.get("/instructor",(req,res) => {
+  if (req.user.accountId == "Local_admin") 
+  {
+    res.redirect('/static/instructor.html');
+  }
+  
 });
 
 app.get('/favicon.ico', (req, res) => {
@@ -174,9 +196,22 @@ app.post('/public/locallogin', [
   passport.authenticate('local', { failureRedirect: '/public/authFail.html' })
 ],
 function(req, res) {
+  if (req.user.accountId == "Local_admin") {
+    res.redirect("/instructor");
+  }
+  else {
   res.redirect('/main');
+  } 
 });
 
+app.post('/instructorsetting',function(req, res) {
+  if (req.user.accountId == "Local_admin") 
+  {
+    util.setShowSolutions(JSON.stringify(parseInt(req.body.showSolutions))) ; 
+    util.setLevelLimit(JSON.stringify(parseInt(req.body.levelLimit)));
+  }
+
+})
 app.post('/public/ldaplogin', passport.authenticate('ldapauth', { failureRedirect: '/public/authFail.html' }),
 function(req, res) {
   res.redirect('/main');
@@ -246,9 +281,12 @@ app.get('/challenges/:moduleId', async (req, res) => {
 
   var returnChallenges = await challenges.getChallengeDefinitionsForUser(req.user, moduleId);
   var response = {
-    "challenges" : returnChallenges
-  };
+    "challenges" : returnChallenges,
+    "showSolutions": config.showSolutions,
+    "levelLimit": parseInt(config.levelLimit)
 
+  };
+  
   if(!util.isNullOrUndefined(config.moduleUrls[moduleId])){
     response.targetUrl = config.moduleUrls[moduleId];
   }
@@ -273,12 +311,17 @@ app.get('/challenges/:moduleId/level', async (req, res) => {
 });
 
 app.get('/challenges/solutions/:challengeId', (req,res) => {
-  var challengeId = req.params.challengeId;
-  if(util.isNullOrUndefined(challengeId) || util.isAlphanumericOrUnderscore(challengeId) === false){
-    return util.apiResponse(req, res, 400, "Invalid challenge id."); 
+  
+  if(config.showSolutions=="1")
+  {
+    var challengeId = req.params.challengeId;
+    if(util.isNullOrUndefined(challengeId) || util.isAlphanumericOrUnderscore(challengeId) === false){
+      return util.apiResponse(req, res, 400, "Invalid challenge id."); 
+    }
+    var solutionHtml = challenges.getSolution(challengeId);
+    res.send(solutionHtml);
   }
-  var solutionHtml = challenges.getSolution(challengeId);
-  res.send(solutionHtml);
+
 });
 
 

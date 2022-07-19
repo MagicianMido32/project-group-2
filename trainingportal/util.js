@@ -30,6 +30,46 @@ exports.getConfig = () => {
   return config;
 }
 
+exports.setShowSolutions = (val) => {
+  if(!config){
+    let dataDir = exports.getDataDir();
+    let configPath = path.join(dataDir, 'config.json');
+    if(!fs.existsSync(configPath)){
+      console.warn(`WARNING: Config file not found at ${configPath}. Trying default file.`);
+      configPath = path.join(__dirname, 'config.json');
+      if(!fs.existsSync(configPath)){
+        //if still doesn't exist exit
+        console.error(`ERROR: Config file not found.`);
+        process.exit(1);
+      }
+    }
+    config = require(configPath);
+  }
+  config.showSolutions=val
+  fs.writeFileSync('config.json',JSON.stringify(config))
+  return config;
+}
+
+exports.setLevelLimit = (val) => {
+  if(!config){
+    let dataDir = exports.getDataDir();
+    let configPath = path.join(dataDir, 'config.json');
+    if(!fs.existsSync(configPath)){
+      console.warn(`WARNING: Config file not found at ${configPath}. Trying default file.`);
+      configPath = path.join(__dirname, 'config.json');
+      if(!fs.existsSync(configPath)){
+        //if still doesn't exist exit
+        console.error(`ERROR: Config file not found.`);
+        process.exit(1);
+      }
+    }
+    config = require(configPath);
+  }
+  config.levelLimit=val
+  fs.writeFileSync('config.json',JSON.stringify(config))
+  return config;
+}
+
 exports.hasKey = function(){
   var hasKey = typeof process.env.CHALLENGE_KEY !== 'undefined' && process.env.CHALLENGE_KEY!=null;
   return hasKey;

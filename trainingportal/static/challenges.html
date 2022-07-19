@@ -12,9 +12,9 @@
         {{completionLabel}}
         </div>
     </div>
-    <div ng-repeat="level in moduleChallengeDefinitions" style="padding-top:10px">
-        <div ng-repeat="challenge in level.challenges" style="padding-top:5px">
-            <div class="card">
+    <div ng-repeat="level in moduleChallengeDefinitions track by $index" style="padding-top:10px" ng-if="$index <= levelLimit">
+        <div ng-repeat="challenge in level.challenges" style="padding-top:5px" >
+            <div class="card" >
                 <div class="card-header">
                     <a class="text-light" data-toggle="collapse" role="button" data-target="#collapse{{challenge.id}}" href="">
                         {{level.name}} : {{challenge.name}} 
@@ -79,7 +79,7 @@
                                 </p>
                                 <a ng-href="#!submitCode/{{moduleId}}/{{challenge.id}}" class="btn btn-info btn-sm" role="button"> Submit Code</a>
                             </span>
-                            <span ng-if="challenge.solution" >
+                            <span ng-if="challenge.solution  && showSolutions == '1'" >
                             <br/><br/>
                             <h4>
                                 Solution
@@ -94,10 +94,10 @@
                 </div>
             </div>
         </div>
+        
     </div>
     </span>
-
-    <div class="text-center" ng-show="isLoading()">
+    <div class="text-center" ng-show="isLoading()" ng-if="flg!=1">
         <strong>Loading...</strong>
         <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
     </div>
