@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="adminApp">
+<head>
+  <meta charset="UTF-8">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/public/jquery/dist/jquery.min.js"></script>
+  <script src="/public/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/public/angular/angular.min.js"></script>
+  <link href="/public/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/public/open-iconic/font/css/open-iconic-bootstrap.min.css" rel="stylesheet">
+
+  <script src="main-app.js"></script>
+<!-- <script>
+    window.localStorage.setItem('XSRF_TOKEN','%XSRF_TOKEN%');
+    window.getAjaxOpts = function(){
+       var opts =  {
+           headers:{
+               "xsrfToken":window.localStorage.getItem("XSRF_TOKEN")
+           }
+       }
+       return opts;
+    }
+</script> -->
+<script>
+    var app1 = angular.module("adminApp", []);
+    app1.controller("AdminAppController", function AdminAppController($scope, $http, ) {
+        
+        $scope.init = () => {
+            $http.get(`/modulelevels`)
+            .then((response) => {
+                if(response != null && response.data != null){
+                    $scope.levels = response.data.levels;
+                    $scope.solution = response.data.solutionStatus;
+                    $scope.levelLimit = parseInt(response.data.limit);     
+                }
+            });
+        }
+        
+        $scope.save = () => {
+            alert("Saved");
+            $http.post("/instructorsetting",{'showSolutions':$scope.solution, 'levelLimit': $scope.levelLimit })
+            .then(function(response) {
+                if(response != null && response.data != null){
+                    if(response.data.status == 200){
+                        $scope.isSuccess = true;
+                    }
+                    else{
+                        $scope.isError = true;
+                    }
+
+                }
+            },function(errorResponse){
+                $scope.isError = true;
+            });
+        }
+
+        
+    });
+
+</script>
+</head>
+<body ng-controller="AdminAppController" ng-init="init()">
+
+    <ul class="navbar-nav">
+        <li class="navbar-item ml-auto"><a class="nav-link" href="/logout" style="color:#e12e1c"><span class="oi oi-account-logout"></span> Logout</a></li>
+    </ul>
+    <div class="row">
+        <div class="container">
+            <h3 style="margin: 30px 0;"> Instructor Dashboard </h3>
+            <form name="instructorForm">
+                <div class="form-group">
+                    <h5 for="exampleInputEmail1">Solutions</h5>
+                    <div class="radio">
+                        <label>
+                        <input type="radio" name="solution" id="optionsRadios1" ng-value="'0'" ng-model="solution">
+                        Hide
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                        <input type="radio" name="solution" id="optionsRadios2" ng-value="'1'" ng-model="solution">
+                        Show
+                        </label>
+                    </div>
+                </div>
+                <hr style="border-top: 1px solid #595959;">
+                
+                <h5>Progress Level Limit</h5>
+                <select class="form-control" name="levelLimit" ng-model="levelLimit">
+                    <option ng-repeat="level in levels" ng-value="level.level"> {{level.name}} </option>
+                     
+                </select>
+                <button type="submit" class="btn btn-danger" 
+                    style="margin-top: 30px;padding: 5px 30px;font-size: 18px;"
+                    ng-click="save()"
+                    ng-init="reset()">
+                    Save
+                </button>
+            </form>
+        </div>
+    </div>
+    <br><br><br><br>
+
+</body>
+</html>
