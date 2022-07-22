@@ -11,3 +11,4 @@ allowedAccounts.json
 runCustomTestScripts.sh
 *.lock
 *.scannerwork
+scan
