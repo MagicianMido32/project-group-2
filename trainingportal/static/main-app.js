@@ -352,7 +352,9 @@ app.controller('mainCtrl', ['$rootScope','$http','$location','dataSvc', function
         
         var particleCount = 50 * (timeLeft / duration);
 
-        var randomInRange = (min,max) => { Math.random() * (max - min) + min }
+        function randomInRange (min , max){
+            return Math.random() * (max-min) + min ;
+        }
         // since particles fall down, start a bit higher than random
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));

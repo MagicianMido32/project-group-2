@@ -23,6 +23,7 @@
 <div ng-if="reportUsers">
 <p>
 <table class="table table-striped">
+    <caption>table</caption>
     <tr>
         <th>Report Date</th>
         <th>Total Users</th>
@@ -42,6 +43,7 @@
 <h5>Report details:</h5>
 <p>
 <table class="table table-responsive">
+    <caption>table</caption>
     <tr ng-repeat="team in reportUsers.teamList">
         <th scope="row">{{team.team}} ({{team.percentComplete}}%)</th>
         <td>
