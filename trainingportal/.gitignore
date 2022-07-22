@@ -10,3 +10,4 @@ allowedAccounts.json
 *.npm
 runCustomTestScripts.sh
 *.lock
+*.scannerwork
