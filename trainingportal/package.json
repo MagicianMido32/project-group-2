@@ -20,7 +20,7 @@
     "bootstrap": "^4.6.0",
     "bootswatch": "^4.6.0",
     "btoa": "^1.2.1",
-    "canvas": "^2.8.0",
+    "canvas": "^2.9.3",
     "canvas-confetti": "^1.4.0",
     "captchapng": "0.0.1",
     "cookie-parser": "^1.4.5",
